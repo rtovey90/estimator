@@ -1309,7 +1309,7 @@
                 <div class="grand-total-item">
                     <div class="grand-total-label">Total Price</div>
                     <div class="grand-total-value editable" id="grand-total-price-container">
-                        <input type="number" id="grand-total-price-input" step="0.01" min="0" value="0" onchange="adjustMarkupsToPrice()" onfocus="this.select()">
+                        <input type="number" id="grand-total-price-input" step="0.1" min="0" value="0" onchange="adjustMarkupsToPrice()" onfocus="this.select()">
                     </div>
                     <div class="edit-hint">Click to edit</div>
                 </div>
@@ -1340,7 +1340,7 @@
                 <div class="payment-plan-item">
                     <div class="payment-plan-label">Monthly Payment</div>
                     <div class="payment-plan-value editable">
-                        <input type="number" id="monthly-payment" step="0.01" min="0" value="0" onchange="adjustTotalFromMonthly()" onfocus="this.select()">
+                        <input type="number" id="monthly-payment" step="0.1" min="0" value="0" onchange="adjustTotalFromMonthly()" onfocus="this.select()">
                     </div>
                     <div class="edit-hint">Click to edit</div>
                 </div>
@@ -1578,11 +1578,11 @@
             const supplierPlaceholder = section === 'labour' ? 'Company Name' : 'Supplier';
 
             row.innerHTML = `
-                <td><input type="number" step="0.01" min="0" value="${quantity}" onchange="calculateRow('${section}', ${rowCounter})"></td>
+                <td><input type="number" step="0.1" min="0" value="${quantity}" onchange="calculateRow('${section}', ${rowCounter})"></td>
                 <td><input type="text" placeholder="Code" value="${code}"></td>
                 <td><input type="text" placeholder="${descriptionPlaceholder}" value="${description}"></td>
                 <td><input type="text" placeholder="${supplierPlaceholder}" value="${supplier}"></td>
-                <td><input type="number" step="0.01" min="0" value="${unitPrice}" onchange="calculateRow('${section}', ${rowCounter})"></td>
+                <td><input type="number" step="0.1" min="0" value="${unitPrice}" onchange="calculateRow('${section}', ${rowCounter})"></td>
                 <td class="calculated" id="gst-${section}-${rowCounter}">$0.00</td>
                 <td class="calculated" id="cost-${section}-${rowCounter}">$0.00</td>
                 <td class="calculated" id="price-${section}-${rowCounter}">$0.00</td>
