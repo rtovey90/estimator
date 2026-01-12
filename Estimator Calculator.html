@@ -2085,21 +2085,61 @@
         }
 
         async function parseInvoiceWithClaude(base64Pdf) {
-            // Call Netlify serverless function to avoid CORS issues
-            const response = await fetch('/.netlify/functions/parse-invoice', {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'x-api-key': claudeApiKey,
+                    'anthropic-version': '2023-06-01'
                 },
                 body: JSON.stringify({
-                    apiKey: claudeApiKey,
-                    pdfBase64: base64Pdf
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 4096,
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'document',
+                                source: {
+                                    type: 'base64',
+                                    media_type: 'application/pdf',
+                                    data: base64Pdf
+                                }
+                            },
+                            {
+                                type: 'text',
+                                text: `Parse this supplier invoice/quotation and extract ALL line items. Return ONLY a JSON object with this exact structure (no markdown, no explanation):
+
+{
+  "supplier": "Company Name",
+  "items": [
+    {
+      "code": "PRODUCT-CODE",
+      "description": "Product description",
+      "quantity": 1.5,
+      "unitPriceExGST": 100.00
+    }
+  ]
+}
+
+Important rules:
+- Extract the supplier/company name
+- Include ALL line items from the invoice
+- Use the unit price EXCLUDING GST (Ex GST price)
+- If only Inc GST price is shown, divide by 1.1 to get Ex GST
+- Quantity should be a number (convert "4.00" to 4)
+- Include product codes if available
+- Keep descriptions concise but complete
+- Return ONLY the JSON, nothing else`
+                            }
+                        ]
+                    }]
                 })
             });
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.error || 'API request failed');
+                throw new Error(error.error?.message || 'API request failed');
             }
 
             const data = await response.json();
