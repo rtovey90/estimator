@@ -29,8 +29,9 @@ exports.handler = async (event, context) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20240620',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 4096,
+        betas: ['pdfs-2024-09-25'],
         messages: [{
           role: 'user',
           content: [
