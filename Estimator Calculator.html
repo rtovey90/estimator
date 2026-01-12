@@ -1181,7 +1181,7 @@
         <!-- Labour Section -->
         <div class="section" data-section="labour">
             <div class="section-header">
-                <h2 class="section-title">Labour</h2>
+                <h2 class="section-title">Contractor</h2>
                 <button class="add-btn" onclick="addRow('labour')">+ Add Item</button>
             </div>
             <div class="table-wrapper">
@@ -1190,8 +1190,8 @@
                         <tr>
                             <th style="width: 80px;">Hours</th>
                             <th style="width: 130px;">Code</th>
-                            <th>Description</th>
-                            <th style="width: 120px;">Supplier</th>
+                            <th>Contractor Name</th>
+                            <th style="width: 140px;">Company Name</th>
                             <th style="width: 110px;">Ex GST ($)</th>
                             <th style="width: 110px;">Inc GST ($)</th>
                             <th style="width: 110px;">Total Cost ($)</th>
@@ -1574,11 +1574,14 @@
             const row = document.createElement('tr');
             row.id = `row-${section}-${rowCounter}`;
 
+            const descriptionPlaceholder = section === 'labour' ? 'Contractor Name' : 'Description';
+            const supplierPlaceholder = section === 'labour' ? 'Company Name' : 'Supplier';
+
             row.innerHTML = `
                 <td><input type="number" step="0.01" min="0" value="${quantity}" onchange="calculateRow('${section}', ${rowCounter})"></td>
                 <td><input type="text" placeholder="Code" value="${code}"></td>
-                <td><input type="text" placeholder="Description" value="${description}"></td>
-                <td><input type="text" placeholder="Supplier" value="${supplier}"></td>
+                <td><input type="text" placeholder="${descriptionPlaceholder}" value="${description}"></td>
+                <td><input type="text" placeholder="${supplierPlaceholder}" value="${supplier}"></td>
                 <td><input type="number" step="0.01" min="0" value="${unitPrice}" onchange="calculateRow('${section}', ${rowCounter})"></td>
                 <td class="calculated" id="gst-${section}-${rowCounter}">$0.00</td>
                 <td class="calculated" id="cost-${section}-${rowCounter}">$0.00</td>
@@ -1783,23 +1786,14 @@
             isAdjustingPrice = false;
         }
 
-        // Initialize with first tab and sample data
+        // Initialize with first tab and blank rows
         createTab('Option 1', {
             labourMarkup: 0,
             materialsMarkup: 0,
             paymentTerm: 24,
             items: {
-                parts: [
-                    {quantity: 1, code: '', description: 'DC Converter', supplier: '', unitPrice: 15},
-                    {quantity: 1, code: '', description: 'Enclosure', supplier: '', unitPrice: 40},
-                    {quantity: 1, code: '', description: 'Maglock', supplier: '', unitPrice: 150},
-                    {quantity: 1, code: '', description: 'Keypad', supplier: '', unitPrice: 150},
-                    {quantity: 1, code: '', description: 'PSU', supplier: '', unitPrice: 150},
-                    {quantity: 1, code: '', description: '3 Buttons & Receiver', supplier: '', unitPrice: 300}
-                ],
-                labour: [
-                    {quantity: 4, code: '', description: 'Installation', supplier: '', unitPrice: 100}
-                ],
+                parts: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
+                labour: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
                 cable: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
                 misc: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}]
             }
