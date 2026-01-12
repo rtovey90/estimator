@@ -26,12 +26,12 @@ exports.handler = async (event, context) => {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'pdfs-2024-09-25'
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20241022',
         max_tokens: 4096,
-        betas: ['pdfs-2024-09-25'],
         messages: [{
           role: 'user',
           content: [
