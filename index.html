@@ -2119,6 +2119,8 @@
                 throw new Error('No items found in invoice');
             }
 
+            removeEmptyPartsRows();
+
             // Add all items from invoice
             invoiceData.items.forEach(item => {
                 addRow(
@@ -2133,6 +2135,28 @@
 
             // Update all calculations
             updateAllCalculations();
+        }
+
+        function removeEmptyPartsRows() {
+            const partsBody = document.getElementById('parts-items');
+            const rows = Array.from(partsBody.querySelectorAll('tr'));
+
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs.length < 5) return;
+
+                const quantity = parseFloat(inputs[0].value) || 0;
+                const code = inputs[1].value.trim();
+                const description = inputs[2].value.trim();
+                const supplier = inputs[3].value.trim();
+                const unitPriceExGST = parseFloat(inputs[4].value) || 0;
+
+                const isEmpty = quantity === 0 && unitPriceExGST === 0 && !code && !description && !supplier;
+
+                if (isEmpty) {
+                    row.remove();
+                }
+            });
         }
 
         function showStatus(message, type) {
