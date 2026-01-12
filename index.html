@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Estimator Calculator</title>
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --light-blue: #00a7e1;
+            --dark-text: #1d1d1f;
+            --medium-text: #6e6e73;
+            --light-bg: #f5f5f7;
+            --border-color: #d2d2d7;
+            --success-green: #34c759;
+            --warning-orange: #ff9500;
+            --danger-red: #ff3b30;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f7;
+            padding: 20px;
+            color: #1d1d1f;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 0;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid #f0f0f5;
+        }
+
+        .logo {
+            max-width: 450px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #1d1d1f;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .logo {
+                max-width: 280px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .tabs-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 5px;
+            }
+
+            .tab {
+                font-size: 13px;
+                padding: 10px 15px;
+            }
+
+            .add-tab-btn {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+
+            .markup-controls {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .section-totals {
+                grid-template-columns: 1fr;
+            }
+
+            .grand-totals-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+
+            .payment-plan-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .client-info-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .save-load-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .save-btn, .load-btn, .new-btn {
+                width: 100%;
+            }
+        }
+
+        /* Better table scrolling on mobile */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 768px) {
+            .items-table {
+                font-size: 13px;
+            }
+
+            .items-table th,
+            .items-table td {
+                padding: 8px 5px;
+            }
+
+            .items-table input {
+                font-size: 14px;
+            }
+
+            .grand-totals-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .payment-plan-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .markup-controls {
+                grid-template-columns: 1fr !important;
+            }
+
+            .client-info-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .save-load-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .save-load-controls button {
+                width: 100%;
+            }
+
+            .tabs-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+        }
+        .markup-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            border-radius: 12px;
+            border: 1px solid #e8e8ed;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .markup-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .markup-control label {
+            font-weight: 600;
+            font-size: 15px;
+            white-space: nowrap;
+            color: var(--dark-text);
+        }
+
+        .markup-control input {
+            width: 110px;
+            padding: 10px 14px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .markup-control input:focus {
+            outline: none;
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 4px rgba(0, 167, 225, 0.15);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .markup-control input {
+                padding: 12px 14px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+        }
+
+        /* PDF Import Section */
+        .pdf-import-section {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f4ff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #b3d9ff;
+        }
+
+        .pdf-import-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .api-key-setup {
+            margin-bottom: 20px;
+        }
+
+        .upload-box {
+            border: 3px dashed var(--primary-blue);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .upload-box:hover {
+            border-color: var(--light-blue);
+            background: #f9fbfd;
+            transform: translateY(-2px);
+        }
+
+        .upload-box.dragover {
+            border-color: var(--success-green);
+            background: #f0fff4;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .upload-status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .upload-status.processing {
+            display: block;
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .upload-status.success {
+            display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .upload-status.error {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 2px solid #e8e8ed;
+            border-radius: 14px;
+            padding: 25px;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .section:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark-text);
+            letter-spacing: -0.3px;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .add-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 18px;
+            }
+
+            .add-btn {
+                padding: 12px 18px;
+                min-height: 44px;
+            }
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+        }
+
+        .items-table th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            padding: 14px 10px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--dark-text);
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .items-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .items-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .items-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f0f5;
+        }
+
+        .items-table input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .items-table input:focus {
+            outline: none;
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 3px rgba(0, 167, 225, 0.1);
+        }
+
+        .remove-btn {
+            background: var(--danger-red);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .remove-btn:hover {
+            background: #ff1507;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (max-width: 768px) {
+            .items-table input {
+                padding: 10px;
+                font-size: 16px;
+                min-height: 40px;
+            }
+
+            .remove-btn {
+                padding: 10px 12px;
+                min-height: 40px;
+            }
+        }
+
+        .calculated {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            font-weight: 700;
+            text-align: right;
+            padding: 12px !important;
+            color: var(--dark-text);
+            font-size: 15px;
+        }
+
+        .section-totals {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e8e8ed;
+        }
+
+        .total-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid #e8e8ed;
+            text-align: center;
+        }
+
+        .total-label {
+            font-size: 12px;
+            color: var(--medium-text);
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .total-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        @media (max-width: 768px) {
+            .section-totals {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .grand-totals {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .grand-totals h2 {
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .grand-totals-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .grand-total-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .grand-total-label {
+            font-size: 13px;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .grand-total-value {
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 768px) {
+            .grand-totals {
+                padding: 25px 20px;
+            }
+
+            .grand-totals h2 {
+                font-size: 22px;
+            }
+
+            .grand-totals-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .grand-total-item {
+                padding: 15px;
+            }
+
+            .grand-total-value {
+                font-size: 24px;
+            }
+        }
+
+        .grand-total-value.editable {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .grand-total-value.editable:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .grand-total-value input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+            padding: 0;
+        }
+
+        .grand-total-value input:focus {
+            outline: none;
+        }
+
+        .profit-highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .section.prominent {
+            border: 3px solid var(--primary-blue);
+            background: linear-gradient(135deg, #f9fbfd 0%, #f0f7ff 100%);
+            box-shadow: var(--shadow-md);
+        }
+
+        .section.prominent .section-title {
+            color: var(--primary-blue);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section.prominent .section-title::before {
+            content: "⭐";
+            font-size: 20px;
+        }
+
+        .edit-hint {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 6px;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .payment-plan {
+            background: linear-gradient(135deg, var(--success-green) 0%, #30d158 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 25px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .payment-plan h3 {
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .payment-plan-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .payment-plan-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .payment-plan-label {
+            font-size: 13px;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .payment-plan-value {
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 768px) {
+            .payment-plan {
+                padding: 25px 20px;
+            }
+
+            .payment-plan h3 {
+                font-size: 20px;
+            }
+
+            .payment-plan-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .payment-plan-item {
+                padding: 15px;
+            }
+
+            .payment-plan-value {
+                font-size: 28px;
+            }
+        }
+
+        .payment-plan-value.editable {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-plan-value.editable:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .payment-plan-value input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+            padding: 0;
+        }
+
+        .payment-plan-value input:focus {
+            outline: none;
+        }
+
+        .payment-plan-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .client-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e8e8ed;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .client-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .client-info label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--dark-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .client-info input,
+        .client-info textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .client-info textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .client-info input:focus,
+        .client-info textarea:focus {
+            outline: none;
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 4px rgba(0, 167, 225, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .client-info {
+                padding: 20px;
+            }
+
+            .client-info input,
+            .client-info textarea {
+                padding: 12px;
+                font-size: 16px;
+                min-height: 44px;
+            }
+
+            .client-info textarea {
+                min-height: 80px;
+            }
+        }
+
+        .save-load-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--success-green) 0%, #30d158 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .load-btn {
+            background: linear-gradient(135deg, var(--warning-orange) 0%, #ffb340 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .load-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .new-btn {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .new-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        @media (max-width: 768px) {
+            .save-btn, .load-btn, .new-btn {
+                padding: 14px 20px;
+                min-height: 48px;
+                width: 100%;
+                font-size: 15px;
+            }
+        }
+
+        .saved-quotes {
+            margin-top: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #d2d2d7;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .saved-quote-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f5f5f7;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .saved-quote-item:hover {
+            background: #e8e8ed;
+        }
+
+        .saved-quote-info {
+            flex: 1;
+        }
+
+        .saved-quote-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .saved-quote-details {
+            font-size: 12px;
+            color: #6e6e73;
+        }
+
+        .delete-quote-btn {
+            background: #ff3b30;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .delete-quote-btn:hover {
+            background: #ff1507;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #e8e8ed;
+            padding-bottom: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+            padding: 14px 24px;
+            background: #f5f5f7;
+            border: none;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--medium-text);
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            border: 2px solid transparent;
+            border-bottom: none;
+        }
+
+        .tab:hover {
+            background: #e8e8ed;
+            color: var(--dark-text);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--primary-blue);
+            font-weight: 700;
+            border-color: #e8e8ed;
+            border-bottom-color: white;
+            margin-bottom: -3px;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-name {
+            min-width: 60px;
+            cursor: pointer;
+        }
+
+        .tab-name.editing {
+            background: white;
+            border: 2px solid var(--light-blue);
+            border-radius: 6px;
+            padding: 4px 8px;
+            outline: none;
+        }
+
+        .tab-close {
+            color: var(--danger-red);
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+
+        .tab-close:hover {
+            color: #ff1507;
+            transform: scale(1.2);
+        }
+
+        .add-tab-btn {
+            background: white;
+            border: 2px dashed var(--border-color);
+            color: var(--primary-blue);
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            margin-left: 10px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .add-tab-btn:hover {
+            border-color: var(--primary-blue);
+            background: #f9fbfd;
+            border-style: solid;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (max-width: 768px) {
+            .tab {
+                padding: 12px 18px;
+                font-size: 14px;
+                min-height: 44px;
+            }
+
+            .add-tab-btn {
+                padding: 12px 16px;
+                min-height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="LOGO WHITE NEW.png" alt="Secure More Sales" class="logo">
+            <h1>Quick Estimator Calculator</h1>
+        </div>
+
+        <!-- Options Tabs -->
+        <div class="tabs-container" id="tabs-container">
+            <!-- Tabs will be added here dynamically -->
+        </div>
+
+        <!-- Client Information -->
+        <div class="client-info">
+            <div class="client-info-grid">
+                <div>
+                    <label for="project-name">Project Name</label>
+                    <input type="text" id="project-name" placeholder="Enter project name">
+                </div>
+                <div>
+                    <label for="quote-date">Date</label>
+                    <input type="date" id="quote-date">
+                </div>
+            </div>
+            <div class="client-info-grid">
+                <div>
+                    <label for="client-name">Client Name</label>
+                    <input type="text" id="client-name" placeholder="Enter client name">
+                </div>
+                <div>
+                    <label for="client-address">Address</label>
+                    <textarea id="client-address" placeholder="Enter client address"></textarea>
+                </div>
+            </div>
+            <div class="save-load-controls">
+                <button class="save-btn" onclick="saveQuoteToFile()">💾 Save Quote to File</button>
+                <button class="load-btn" onclick="document.getElementById('file-input').click()">📂 Load Quote from File</button>
+                <button class="new-btn" onclick="newQuote()">📄 New Quote</button>
+                <input type="file" id="file-input" accept=".json" style="display: none;" onchange="loadQuoteFromFile(event)">
+                <span id="save-status" style="color: #34c759; font-weight: 600; margin-left: 10px;"></span>
+            </div>
+        </div>
+
+        <!-- Markup Controls -->
+        <div class="markup-controls">
+            <div class="markup-control">
+                <label for="labour-markup">Labour Markup:</label>
+                <input type="number" id="labour-markup" step="0.1" min="0" value="0" onchange="updateAllCalculations()">
+                <span>%</span>
+            </div>
+            <div class="markup-control">
+                <label for="materials-markup">Materials Markup:</label>
+                <input type="number" id="materials-markup" step="0.1" min="0" value="0" onchange="updateAllCalculations()">
+                <span>%</span>
+            </div>
+        </div>
+
+        <!-- PDF Invoice Import -->
+        <div class="pdf-import-section">
+            <h3>Import Supplier Invoice</h3>
+            <div class="api-key-setup" id="api-key-setup">
+                <p style="margin-bottom: 10px;">To use AI-powered invoice import, enter your Claude API key (stored securely in your browser):</p>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="password" id="api-key-input" placeholder="sk-ant-..." style="flex: 1; padding: 10px; border-radius: 6px; border: 2px solid #d2d2d7;">
+                    <button class="save-btn" onclick="saveApiKey()" style="white-space: nowrap;">Save Key</button>
+                    <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color: #06c; text-decoration: none; white-space: nowrap;">Get API Key →</a>
+                </div>
+            </div>
+            <div class="pdf-upload-area" id="pdf-upload-area" style="display: none;">
+                <div class="upload-box" id="upload-box">
+                    <div class="upload-icon">📄</div>
+                    <p><strong>Drop supplier invoice PDF here</strong></p>
+                    <p style="font-size: 14px; color: #6e6e73;">or click to browse</p>
+                    <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;" onchange="handlePdfUpload(event)">
+                </div>
+                <div class="upload-status" id="upload-status"></div>
+            </div>
+        </div>
+
+        <!-- Main Parts Section -->
+        <div class="section prominent" data-section="parts">
+            <div class="section-header">
+                <h2 class="section-title">Main Parts</h2>
+                <button class="add-btn" onclick="addRow('parts')">+ Add Item</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">QTY</th>
+                            <th style="width: 130px;">Code</th>
+                            <th>Description</th>
+                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 110px;">Ex GST ($)</th>
+                            <th style="width: 110px;">Inc GST ($)</th>
+                            <th style="width: 110px;">Total Cost ($)</th>
+                            <th style="width: 120px;">Price to Charge ($)</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="parts-items"></tbody>
+                </table>
+            </div>
+            <div class="section-totals">
+                <div class="total-item">
+                    <div class="total-label">Total Cost</div>
+                    <div class="total-value" id="parts-total-cost">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Price</div>
+                    <div class="total-value" id="parts-total-price">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Profit</div>
+                    <div class="total-value" id="parts-total-profit">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Labour Section -->
+        <div class="section" data-section="labour">
+            <div class="section-header">
+                <h2 class="section-title">Labour</h2>
+                <button class="add-btn" onclick="addRow('labour')">+ Add Item</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Hours</th>
+                            <th style="width: 130px;">Code</th>
+                            <th>Description</th>
+                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 110px;">Ex GST ($)</th>
+                            <th style="width: 110px;">Inc GST ($)</th>
+                            <th style="width: 110px;">Total Cost ($)</th>
+                            <th style="width: 120px;">Price to Charge ($)</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="labour-items"></tbody>
+                </table>
+            </div>
+            <div class="section-totals">
+                <div class="total-item">
+                    <div class="total-label">Total Cost</div>
+                    <div class="total-value" id="labour-total-cost">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Price</div>
+                    <div class="total-value" id="labour-total-price">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Profit</div>
+                    <div class="total-value" id="labour-total-profit">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cable Section -->
+        <div class="section" data-section="cable">
+            <div class="section-header">
+                <h2 class="section-title">Cable</h2>
+                <button class="add-btn" onclick="addRow('cable')">+ Add Item</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">QTY</th>
+                            <th style="width: 130px;">Code</th>
+                            <th>Description</th>
+                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 110px;">Ex GST ($)</th>
+                            <th style="width: 110px;">Inc GST ($)</th>
+                            <th style="width: 110px;">Total Cost ($)</th>
+                            <th style="width: 120px;">Price to Charge ($)</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cable-items"></tbody>
+                </table>
+            </div>
+            <div class="section-totals">
+                <div class="total-item">
+                    <div class="total-label">Total Cost</div>
+                    <div class="total-value" id="cable-total-cost">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Price</div>
+                    <div class="total-value" id="cable-total-price">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Profit</div>
+                    <div class="total-value" id="cable-total-profit">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Miscellaneous Section -->
+        <div class="section" data-section="misc">
+            <div class="section-header">
+                <h2 class="section-title">Miscellaneous</h2>
+                <button class="add-btn" onclick="addRow('misc')">+ Add Item</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">QTY</th>
+                            <th style="width: 130px;">Code</th>
+                            <th>Description</th>
+                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 110px;">Ex GST ($)</th>
+                            <th style="width: 110px;">Inc GST ($)</th>
+                            <th style="width: 110px;">Total Cost ($)</th>
+                            <th style="width: 120px;">Price to Charge ($)</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="misc-items"></tbody>
+                </table>
+            </div>
+            <div class="section-totals">
+                <div class="total-item">
+                    <div class="total-label">Total Cost</div>
+                    <div class="total-value" id="misc-total-cost">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Price</div>
+                    <div class="total-value" id="misc-total-price">$0.00</div>
+                </div>
+                <div class="total-item">
+                    <div class="total-label">Total Profit</div>
+                    <div class="total-value" id="misc-total-profit">$0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grand Totals -->
+        <div class="grand-totals">
+            <h2>Project Summary</h2>
+            <div class="grand-totals-grid">
+                <div class="grand-total-item">
+                    <div class="grand-total-label">Total Cost</div>
+                    <div class="grand-total-value" id="grand-total-cost">$0.00</div>
+                </div>
+                <div class="grand-total-item">
+                    <div class="grand-total-label">Total Price</div>
+                    <div class="grand-total-value editable" id="grand-total-price-container">
+                        <input type="number" id="grand-total-price-input" step="0.01" min="0" value="0" onchange="adjustMarkupsToPrice()" onfocus="this.select()">
+                    </div>
+                    <div class="edit-hint">Click to edit</div>
+                </div>
+                <div class="grand-total-item profit-highlight">
+                    <div class="grand-total-label">Total Profit</div>
+                    <div class="grand-total-value" id="grand-total-profit">$0.00</div>
+                </div>
+                <div class="grand-total-item profit-highlight">
+                    <div class="grand-total-label">Markup</div>
+                    <div class="grand-total-value" id="grand-profit-markup">0%</div>
+                    <div class="grand-total-label" style="margin-top: 10px;">Profit Margin</div>
+                    <div class="grand-total-value" id="grand-profit-margin">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Plan -->
+        <div class="payment-plan">
+            <h3>Payment Plan</h3>
+            <div class="payment-plan-grid">
+                <div class="payment-plan-item">
+                    <div class="payment-plan-label">Term (Months)</div>
+                    <div class="payment-plan-value editable">
+                        <input type="number" id="payment-term" step="1" min="1" value="24" onchange="calculateMonthlyPayment()" onfocus="this.select()">
+                    </div>
+                    <div class="edit-hint">Click to edit</div>
+                </div>
+                <div class="payment-plan-item">
+                    <div class="payment-plan-label">Monthly Payment</div>
+                    <div class="payment-plan-value editable">
+                        <input type="number" id="monthly-payment" step="0.01" min="0" value="0" onchange="adjustTotalFromMonthly()" onfocus="this.select()">
+                    </div>
+                    <div class="edit-hint">Click to edit</div>
+                </div>
+            </div>
+            <div class="payment-plan-note">
+                Edit the monthly payment to set a nice round number, or adjust the term to see different payment options
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = 0;
+        let isAdjustingPrice = false; // Prevent circular updates
+        let isAdjustingPayment = false; // Prevent circular updates for payment plan
+
+        // Tab management
+        let tabCounter = 0;
+        let activeTabId = null;
+        let tabs = {}; // Store data for each tab
+
+        function createTab(name = null, data = null) {
+            tabCounter++;
+            const tabId = `tab-${tabCounter}`;
+            const tabName = name || `Option ${tabCounter}`;
+
+            tabs[tabId] = {
+                name: tabName,
+                labourMarkup: data?.labourMarkup || 0,
+                materialsMarkup: data?.materialsMarkup || 0,
+                paymentTerm: data?.paymentTerm || 24,
+                items: data?.items || {
+                    parts: [],
+                    labour: [],
+                    cable: [],
+                    misc: []
+                }
+            };
+
+            if (!activeTabId) {
+                activeTabId = tabId;
+            }
+
+            renderTabs();
+            if (activeTabId === tabId) {
+                loadTabState(tabId);
+            }
+
+            return tabId;
+        }
+
+        function switchTab(tabId) {
+            if (tabId === activeTabId) return;
+
+            // Save current tab state
+            if (activeTabId) {
+                saveTabState(activeTabId);
+            }
+
+            // Switch to new tab
+            activeTabId = tabId;
+            loadTabState(tabId);
+            renderTabs();
+        }
+
+        function duplicateTab() {
+            if (!activeTabId) return;
+
+            // Save current state first
+            saveTabState(activeTabId);
+
+            // Prompt for name
+            const currentTab = tabs[activeTabId];
+            const newName = prompt('Enter name for new option:', `${currentTab.name} (Copy)`);
+
+            if (newName === null) return; // User cancelled
+
+            const finalName = newName.trim() || `Option ${tabCounter + 1}`;
+
+            // Create new tab with same data
+            const newTabId = createTab(finalName, {
+                labourMarkup: currentTab.labourMarkup,
+                materialsMarkup: currentTab.materialsMarkup,
+                paymentTerm: currentTab.paymentTerm,
+                items: JSON.parse(JSON.stringify(currentTab.items)) // Deep copy
+            });
+
+            // Switch to new tab
+            switchTab(newTabId);
+        }
+
+        function deleteTab(tabId) {
+            const tabKeys = Object.keys(tabs);
+            if (tabKeys.length <= 1) {
+                alert('You must have at least one option');
+                return;
+            }
+
+            if (!confirm(`Delete "${tabs[tabId].name}"?`)) {
+                return;
+            }
+
+            delete tabs[tabId];
+
+            // If we deleted the active tab, switch to another
+            if (activeTabId === tabId) {
+                activeTabId = Object.keys(tabs)[0];
+                loadTabState(activeTabId);
+            }
+
+            renderTabs();
+        }
+
+        function renameTab(tabId, newName) {
+            if (tabs[tabId]) {
+                tabs[tabId].name = newName;
+                renderTabs();
+            }
+        }
+
+        function saveTabState(tabId) {
+            if (!tabs[tabId]) return;
+
+            tabs[tabId].labourMarkup = document.getElementById('labour-markup').value;
+            tabs[tabId].materialsMarkup = document.getElementById('materials-markup').value;
+            tabs[tabId].paymentTerm = document.getElementById('payment-term').value;
+            tabs[tabId].items = {
+                parts: getRowsData('parts'),
+                labour: getRowsData('labour'),
+                cable: getRowsData('cable'),
+                misc: getRowsData('misc')
+            };
+        }
+
+        function loadTabState(tabId) {
+            if (!tabs[tabId]) return;
+
+            const tab = tabs[tabId];
+
+            // Clear existing rows
+            ['parts', 'labour', 'cable', 'misc'].forEach(section => {
+                document.getElementById(`${section}-items`).innerHTML = '';
+            });
+
+            // Load markups and payment term
+            document.getElementById('labour-markup').value = tab.labourMarkup || 0;
+            document.getElementById('materials-markup').value = tab.materialsMarkup || 0;
+            document.getElementById('payment-term').value = tab.paymentTerm || 24;
+
+            // Load items
+            rowCounter = 0;
+            Object.keys(tab.items).forEach(section => {
+                if (tab.items[section] && tab.items[section].length > 0) {
+                    tab.items[section].forEach(item => {
+                        addRow(section, item.quantity, item.description, item.supplier || '', item.unitPrice, item.code || '');
+                    });
+                } else {
+                    addRow(section);
+                }
+            });
+
+            updateAllCalculations();
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+
+            Object.keys(tabs).forEach(tabId => {
+                const tab = tabs[tabId];
+                const tabEl = document.createElement('div');
+                tabEl.className = `tab ${tabId === activeTabId ? 'active' : ''}`;
+
+                const nameEl = document.createElement('span');
+                nameEl.className = 'tab-name';
+                nameEl.textContent = tab.name;
+                nameEl.ondblclick = () => {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = tab.name;
+                    input.className = 'tab-name editing';
+                    input.onblur = () => {
+                        renameTab(tabId, input.value || tab.name);
+                    };
+                    input.onkeydown = (e) => {
+                        if (e.key === 'Enter') {
+                            input.blur();
+                        }
+                    };
+                    nameEl.replaceWith(input);
+                    input.focus();
+                    input.select();
+                };
+
+                tabEl.appendChild(nameEl);
+
+                // Add close button if more than one tab
+                if (Object.keys(tabs).length > 1) {
+                    const closeEl = document.createElement('span');
+                    closeEl.className = 'tab-close';
+                    closeEl.textContent = '×';
+                    closeEl.onclick = (e) => {
+                        e.stopPropagation();
+                        deleteTab(tabId);
+                    };
+                    tabEl.appendChild(closeEl);
+                }
+
+                tabEl.onclick = () => switchTab(tabId);
+                container.appendChild(tabEl);
+            });
+
+            // Add "duplicate" button
+            const addBtn = document.createElement('button');
+            addBtn.className = 'add-tab-btn';
+            addBtn.textContent = '+ Duplicate Option';
+            addBtn.onclick = duplicateTab;
+            container.appendChild(addBtn);
+        }
+
+        function getMarkup(section) {
+            if (section === 'labour') {
+                return parseFloat(document.getElementById('labour-markup').value) || 0;
+            } else {
+                return parseFloat(document.getElementById('materials-markup').value) || 0;
+            }
+        }
+
+        function addRow(section, quantity = 1, description = '', supplier = '', unitPrice = 0, code = '') {
+            rowCounter++;
+            const tbody = document.getElementById(`${section}-items`);
+            const row = document.createElement('tr');
+            row.id = `row-${section}-${rowCounter}`;
+
+            row.innerHTML = `
+                <td><input type="number" step="0.01" min="0" value="${quantity}" onchange="calculateRow('${section}', ${rowCounter})"></td>
+                <td><input type="text" placeholder="Code" value="${code}"></td>
+                <td><input type="text" placeholder="Description" value="${description}"></td>
+                <td><input type="text" placeholder="Supplier" value="${supplier}"></td>
+                <td><input type="number" step="0.01" min="0" value="${unitPrice}" onchange="calculateRow('${section}', ${rowCounter})"></td>
+                <td class="calculated" id="gst-${section}-${rowCounter}">$0.00</td>
+                <td class="calculated" id="cost-${section}-${rowCounter}">$0.00</td>
+                <td class="calculated" id="price-${section}-${rowCounter}">$0.00</td>
+                <td><button class="remove-btn" onclick="removeRow('${section}', ${rowCounter})">Remove</button></td>
+            `;
+
+            tbody.appendChild(row);
+            calculateRow(section, rowCounter);
+        }
+
+        function removeRow(section, id) {
+            const row = document.getElementById(`row-${section}-${id}`);
+            if (row) {
+                row.remove();
+                calculateSectionTotals(section);
+                calculateGrandTotals();
+            }
+        }
+
+        function calculateRow(section, id) {
+            const row = document.getElementById(`row-${section}-${id}`);
+            if (!row) return;
+
+            const inputs = row.querySelectorAll('input');
+            const quantity = parseFloat(inputs[0].value) || 0;
+            // inputs[1] = code, inputs[2] = description, inputs[3] = supplier
+            const unitPriceExGST = parseFloat(inputs[4].value) || 0;
+            const markup = getMarkup(section);
+
+            // Calculate Inc GST (10% GST)
+            const unitPriceIncGST = unitPriceExGST * 1.10;
+
+            // Calculate totals based on Ex GST price
+            const cost = quantity * unitPriceExGST;
+            const price = cost * (1 + markup / 100);
+
+            document.getElementById(`gst-${section}-${id}`).textContent = `$${unitPriceIncGST.toFixed(2)}`;
+            document.getElementById(`cost-${section}-${id}`).textContent = `$${cost.toFixed(2)}`;
+            document.getElementById(`price-${section}-${id}`).textContent = `$${price.toFixed(2)}`;
+
+            calculateSectionTotals(section);
+            calculateGrandTotals();
+        }
+
+        function calculateSectionTotals(section) {
+            const tbody = document.getElementById(`${section}-items`);
+            const rows = tbody.querySelectorAll('tr');
+            const markup = getMarkup(section);
+
+            let totalCost = 0;
+            let totalPrice = 0;
+
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const quantity = parseFloat(inputs[0].value) || 0;
+                const unitPriceExGST = parseFloat(inputs[4].value) || 0;
+
+                const cost = quantity * unitPriceExGST;
+                const price = cost * (1 + markup / 100);
+
+                totalCost += cost;
+                totalPrice += price;
+            });
+
+            const totalProfit = totalPrice - totalCost;
+
+            document.getElementById(`${section}-total-cost`).textContent = `$${totalCost.toFixed(2)}`;
+            document.getElementById(`${section}-total-price`).textContent = `$${totalPrice.toFixed(2)}`;
+            document.getElementById(`${section}-total-profit`).textContent = `$${totalProfit.toFixed(2)}`;
+        }
+
+        function calculateGrandTotals() {
+            if (isAdjustingPrice) return;
+
+            const sections = ['parts', 'labour', 'cable', 'misc'];
+            let grandTotalCost = 0;
+            let grandTotalPrice = 0;
+
+            sections.forEach(section => {
+                const tbody = document.getElementById(`${section}-items`);
+                const rows = tbody.querySelectorAll('tr');
+                const markup = getMarkup(section);
+
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input');
+                    const quantity = parseFloat(inputs[0].value) || 0;
+                    const unitPriceExGST = parseFloat(inputs[4].value) || 0;
+
+                    const cost = quantity * unitPriceExGST;
+                    const price = cost * (1 + markup / 100);
+
+                    grandTotalCost += cost;
+                    grandTotalPrice += price;
+                });
+            });
+
+            const grandTotalProfit = grandTotalPrice - grandTotalCost;
+            const markup = grandTotalCost > 0 ? (grandTotalProfit / grandTotalCost) * 100 : 0;
+            const profitMargin = grandTotalPrice > 0 ? (grandTotalProfit / grandTotalPrice) * 100 : 0;
+
+            document.getElementById('grand-total-cost').textContent = `$${grandTotalCost.toFixed(2)}`;
+            document.getElementById('grand-total-price-input').value = grandTotalPrice.toFixed(2);
+            document.getElementById('grand-total-profit').textContent = `$${grandTotalProfit.toFixed(2)}`;
+            document.getElementById('grand-profit-markup').textContent = `${markup.toFixed(1)}%`;
+            document.getElementById('grand-profit-margin').textContent = `${profitMargin.toFixed(1)}%`;
+
+            // Update monthly payment when total price changes
+            if (!isAdjustingPayment) {
+                calculateMonthlyPayment();
+            }
+        }
+
+        function updateAllCalculations() {
+            const sections = ['parts', 'labour', 'cable', 'misc'];
+
+            sections.forEach(section => {
+                const tbody = document.getElementById(`${section}-items`);
+                const rows = tbody.querySelectorAll('tr');
+
+                rows.forEach((row, index) => {
+                    const rowId = row.id.split('-').pop();
+                    calculateRow(section, parseInt(rowId));
+                });
+
+                calculateSectionTotals(section);
+            });
+
+            calculateGrandTotals();
+        }
+
+        function adjustMarkupsToPrice() {
+            isAdjustingPrice = true;
+
+            const targetPrice = parseFloat(document.getElementById('grand-total-price-input').value) || 0;
+
+            // Calculate total cost
+            const sections = ['parts', 'labour', 'cable', 'misc'];
+            let labourCost = 0;
+            let materialsCost = 0;
+
+            sections.forEach(section => {
+                const tbody = document.getElementById(`${section}-items`);
+                const rows = tbody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input');
+                    const quantity = parseFloat(inputs[0].value) || 0;
+                    const unitPriceExGST = parseFloat(inputs[4].value) || 0;
+                    const cost = quantity * unitPriceExGST;
+
+                    if (section === 'labour') {
+                        labourCost += cost;
+                    } else {
+                        materialsCost += cost;
+                    }
+                });
+            });
+
+            const totalCost = labourCost + materialsCost;
+
+            if (totalCost > 0) {
+                // Calculate uniform markup needed to reach target price
+                const requiredMarkup = ((targetPrice - totalCost) / totalCost) * 100;
+
+                // Apply the markup to both labour and materials
+                document.getElementById('labour-markup').value = Math.max(0, requiredMarkup).toFixed(1);
+                document.getElementById('materials-markup').value = Math.max(0, requiredMarkup).toFixed(1);
+            }
+
+            isAdjustingPrice = false;
+            updateAllCalculations();
+        }
+
+        function calculateMonthlyPayment() {
+            if (isAdjustingPayment) return;
+
+            const totalPrice = parseFloat(document.getElementById('grand-total-price-input').value) || 0;
+            const term = parseFloat(document.getElementById('payment-term').value) || 24;
+
+            const monthlyPayment = term > 0 ? totalPrice / term : 0;
+
+            document.getElementById('monthly-payment').value = monthlyPayment.toFixed(2);
+        }
+
+        function adjustTotalFromMonthly() {
+            isAdjustingPayment = true;
+            isAdjustingPrice = true;
+
+            const monthlyPayment = parseFloat(document.getElementById('monthly-payment').value) || 0;
+            const term = parseFloat(document.getElementById('payment-term').value) || 24;
+
+            const newTotalPrice = monthlyPayment * term;
+
+            // Update the total price
+            document.getElementById('grand-total-price-input').value = newTotalPrice.toFixed(2);
+
+            // Adjust markups to match the new total price
+            adjustMarkupsToPrice();
+
+            isAdjustingPayment = false;
+            isAdjustingPrice = false;
+        }
+
+        // Initialize with first tab and sample data
+        createTab('Option 1', {
+            labourMarkup: 0,
+            materialsMarkup: 0,
+            paymentTerm: 24,
+            items: {
+                parts: [
+                    {quantity: 1, code: '', description: 'DC Converter', supplier: '', unitPrice: 15},
+                    {quantity: 1, code: '', description: 'Enclosure', supplier: '', unitPrice: 40},
+                    {quantity: 1, code: '', description: 'Maglock', supplier: '', unitPrice: 150},
+                    {quantity: 1, code: '', description: 'Keypad', supplier: '', unitPrice: 150},
+                    {quantity: 1, code: '', description: 'PSU', supplier: '', unitPrice: 150},
+                    {quantity: 1, code: '', description: '3 Buttons & Receiver', supplier: '', unitPrice: 300}
+                ],
+                labour: [
+                    {quantity: 4, code: '', description: 'Installation', supplier: '', unitPrice: 100}
+                ],
+                cable: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
+                misc: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}]
+            }
+        });
+
+        // Save/Load functionality
+        function saveQuoteToFile() {
+            const clientName = document.getElementById('client-name').value.trim();
+            const projectName = document.getElementById('project-name').value.trim();
+
+            if (!clientName && !projectName) {
+                alert('Please enter a client name or project name before saving');
+                return;
+            }
+
+            // Save current tab state before saving
+            if (activeTabId) {
+                saveTabState(activeTabId);
+            }
+
+            const quote = {
+                projectName: projectName,
+                quoteDate: document.getElementById('quote-date').value,
+                clientName: clientName,
+                clientAddress: document.getElementById('client-address').value,
+                tabs: tabs,
+                activeTabId: activeTabId,
+                savedDate: new Date().toISOString()
+            };
+
+            // Create filename from client/project name and date
+            const name = projectName || clientName;
+            const date = new Date().toISOString().split('T')[0];
+            const filename = `Quote_${name.replace(/[^a-z0-9]/gi, '_')}_${date}.json`;
+
+            // Convert to JSON string
+            const jsonStr = JSON.stringify(quote, null, 2);
+
+            // Create blob and download
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Show confirmation
+            const statusEl = document.getElementById('save-status');
+            statusEl.textContent = '✓ Saved to Downloads!';
+            setTimeout(() => statusEl.textContent = '', 3000);
+        }
+
+        function getRowsData(section) {
+            const tbody = document.getElementById(`${section}-items`);
+            const rows = tbody.querySelectorAll('tr');
+            const data = [];
+
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                data.push({
+                    quantity: inputs[0].value,
+                    code: inputs[1].value,
+                    description: inputs[2].value,
+                    supplier: inputs[3].value,
+                    unitPrice: inputs[4].value
+                });
+            });
+
+            return data;
+        }
+
+        function loadQuoteFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const quote = JSON.parse(e.target.result);
+
+                    // Load project info (shared across tabs)
+                    document.getElementById('project-name').value = quote.projectName || '';
+                    document.getElementById('quote-date').value = quote.quoteDate || getTodayDate();
+
+                    // Load client info (shared across tabs)
+                    document.getElementById('client-name').value = quote.clientName || '';
+                    document.getElementById('client-address').value = quote.clientAddress || '';
+
+                    // Check if this is a new format (with tabs) or old format (single quote)
+                    if (quote.tabs) {
+                        // New format with multiple tabs
+                        tabs = quote.tabs;
+                        tabCounter = Object.keys(tabs).length;
+                        activeTabId = quote.activeTabId || Object.keys(tabs)[0];
+                        loadTabState(activeTabId);
+                        renderTabs();
+                    } else {
+                        // Old format - convert to single tab
+                        tabs = {};
+                        tabCounter = 0;
+                        activeTabId = null;
+
+                        createTab('Option 1', {
+                            labourMarkup: quote.labourMarkup || 0,
+                            materialsMarkup: quote.materialsMarkup || 0,
+                            paymentTerm: quote.paymentTerm || 24,
+                            items: quote.items || {
+                                parts: [],
+                                labour: [],
+                                cable: [],
+                                misc: []
+                            }
+                        });
+                    }
+
+                    // Show confirmation
+                    const statusEl = document.getElementById('save-status');
+                    statusEl.textContent = '✓ Loaded!';
+                    statusEl.style.color = '#ff9500';
+                    setTimeout(() => {
+                        statusEl.textContent = '';
+                        statusEl.style.color = '#34c759';
+                    }, 3000);
+
+                    // Reset file input
+                    event.target.value = '';
+                } catch (error) {
+                    alert('Error loading quote file. Please make sure it\'s a valid quote file.');
+                    console.error('Error parsing quote:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function newQuote() {
+            if (!confirm('Start a new quote? Any unsaved changes will be lost.')) {
+                return;
+            }
+
+            // Clear project info
+            document.getElementById('project-name').value = '';
+            document.getElementById('quote-date').value = getTodayDate();
+
+            // Clear client info
+            document.getElementById('client-name').value = '';
+            document.getElementById('client-address').value = '';
+
+            // Reset tabs
+            tabs = {};
+            tabCounter = 0;
+            activeTabId = null;
+
+            // Create fresh first tab with empty data
+            createTab('Option 1', {
+                labourMarkup: 0,
+                materialsMarkup: 0,
+                paymentTerm: 24,
+                items: {
+                    parts: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
+                    labour: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
+                    cable: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}],
+                    misc: [{quantity: 1, code: '', description: '', supplier: '', unitPrice: 0}]
+                }
+            });
+        }
+
+        function getTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Set today's date on page load
+        document.getElementById('quote-date').value = getTodayDate();
+
+        // PDF Import functionality
+        let claudeApiKey = localStorage.getItem('claude_api_key') || '';
+
+        // Check if API key exists on load
+        if (claudeApiKey) {
+            document.getElementById('api-key-setup').style.display = 'none';
+            document.getElementById('pdf-upload-area').style.display = 'block';
+            setupUploadHandlers();
+        }
+
+        function saveApiKey() {
+            const apiKey = document.getElementById('api-key-input').value.trim();
+            if (!apiKey) {
+                alert('Please enter an API key');
+                return;
+            }
+            if (!apiKey.startsWith('sk-ant-')) {
+                alert('Invalid API key format. Should start with sk-ant-');
+                return;
+            }
+
+            localStorage.setItem('claude_api_key', apiKey);
+            claudeApiKey = apiKey;
+
+            document.getElementById('api-key-setup').style.display = 'none';
+            document.getElementById('pdf-upload-area').style.display = 'block';
+            setupUploadHandlers();
+
+            showStatus('API key saved successfully!', 'success');
+        }
+
+        function setupUploadHandlers() {
+            const uploadBox = document.getElementById('upload-box');
+            const fileInput = document.getElementById('pdf-file-input');
+
+            // Click to upload
+            uploadBox.onclick = () => fileInput.click();
+
+            // Drag and drop
+            uploadBox.ondragover = (e) => {
+                e.preventDefault();
+                uploadBox.classList.add('dragover');
+            };
+
+            uploadBox.ondragleave = () => {
+                uploadBox.classList.remove('dragover');
+            };
+
+            uploadBox.ondrop = (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    handlePdfUpload({ target: { files: files } });
+                } else {
+                    showStatus('Please drop a PDF file', 'error');
+                }
+            };
+        }
+
+        async function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.type !== 'application/pdf') {
+                showStatus('Please select a PDF file', 'error');
+                return;
+            }
+
+            showStatus('Processing invoice... This may take 10-20 seconds', 'processing');
+
+            try {
+                // Convert PDF to base64
+                const base64Pdf = await fileToBase64(file);
+
+                // Call Claude API
+                const invoiceData = await parseInvoiceWithClaude(base64Pdf);
+
+                // Populate the calculator
+                populateFromInvoice(invoiceData);
+
+                showStatus(`Successfully imported ${invoiceData.items.length} items from ${invoiceData.supplier || 'invoice'}!`, 'success');
+
+                // Clear file input
+                event.target.value = '';
+            } catch (error) {
+                console.error('Error processing PDF:', error);
+                showStatus(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function parseInvoiceWithClaude(base64Pdf) {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': claudeApiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 4096,
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'document',
+                                source: {
+                                    type: 'base64',
+                                    media_type: 'application/pdf',
+                                    data: base64Pdf
+                                }
+                            },
+                            {
+                                type: 'text',
+                                text: `Parse this supplier invoice/quotation and extract ALL line items. Return ONLY a JSON object with this exact structure (no markdown, no explanation):
+
+{
+  "supplier": "Company Name",
+  "items": [
+    {
+      "code": "PRODUCT-CODE",
+      "description": "Product description",
+      "quantity": 1.5,
+      "unitPriceExGST": 100.00
+    }
+  ]
+}
+
+Important rules:
+- Extract the supplier/company name
+- Include ALL line items from the invoice
+- Use the unit price EXCLUDING GST (Ex GST price)
+- If only Inc GST price is shown, divide by 1.1 to get Ex GST
+- Quantity should be a number (convert "4.00" to 4)
+- Include product codes if available
+- Keep descriptions concise but complete
+- Return ONLY the JSON, nothing else`
+                            }
+                        ]
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'API request failed');
+            }
+
+            const data = await response.json();
+            const jsonText = data.content[0].text.trim();
+
+            // Remove markdown code blocks if present
+            const cleanJson = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+            return JSON.parse(cleanJson);
+        }
+
+        function populateFromInvoice(invoiceData) {
+            if (!invoiceData.items || invoiceData.items.length === 0) {
+                throw new Error('No items found in invoice');
+            }
+
+            // Clear existing parts rows (keep at least one empty row)
+            const partsBody = document.getElementById('parts-items');
+            partsBody.innerHTML = '';
+
+            // Add all items from invoice
+            invoiceData.items.forEach(item => {
+                addRow(
+                    'parts',
+                    item.quantity || 1,
+                    item.description || '',
+                    invoiceData.supplier || '',
+                    item.unitPriceExGST || 0,
+                    item.code || ''
+                );
+            });
+
+            // Update all calculations
+            updateAllCalculations();
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('upload-status');
+            statusEl.className = 'upload-status ' + type;
+            statusEl.textContent = message;
+
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    statusEl.className = 'upload-status';
+                    statusEl.textContent = '';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
