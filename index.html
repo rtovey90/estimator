@@ -1143,7 +1143,7 @@
                             <th style="width: 80px;">QTY</th>
                             <th style="width: 130px;">Code</th>
                             <th>Description</th>
-                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 200px;">Supplier</th>
                             <th style="width: 110px;">Ex GST ($)</th>
                             <th style="width: 110px;">Inc GST ($)</th>
                             <th style="width: 130px;">Total Cost (Ex GST $)</th>
@@ -1183,7 +1183,7 @@
                             <th style="width: 80px;">Hours</th>
                             <th style="width: 130px;">Code</th>
                             <th>Contractor Name</th>
-                            <th style="width: 140px;">Company Name</th>
+                            <th style="width: 200px;">Company Name</th>
                             <th style="width: 110px;">Ex GST ($)</th>
                             <th style="width: 110px;">Inc GST ($)</th>
                             <th style="width: 130px;">Total Cost (Ex GST $)</th>
@@ -1223,7 +1223,7 @@
                             <th style="width: 80px;">QTY</th>
                             <th style="width: 130px;">Code</th>
                             <th>Description</th>
-                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 200px;">Supplier</th>
                             <th style="width: 110px;">Ex GST ($)</th>
                             <th style="width: 110px;">Inc GST ($)</th>
                             <th style="width: 130px;">Total Cost (Ex GST $)</th>
@@ -1263,7 +1263,7 @@
                             <th style="width: 80px;">QTY</th>
                             <th style="width: 130px;">Code</th>
                             <th>Description</th>
-                            <th style="width: 120px;">Supplier</th>
+                            <th style="width: 200px;">Supplier</th>
                             <th style="width: 110px;">Ex GST ($)</th>
                             <th style="width: 110px;">Inc GST ($)</th>
                             <th style="width: 130px;">Total Cost (Ex GST $)</th>
@@ -2119,13 +2119,12 @@
                 const inputs = row.querySelectorAll('input');
                 if (inputs.length < 5) return;
 
-                const quantity = parseFloat(inputs[0].value) || 0;
                 const code = inputs[1].value.trim();
                 const description = inputs[2].value.trim();
                 const supplier = inputs[3].value.trim();
                 const unitPriceExGST = parseFloat(inputs[4].value) || 0;
 
-                const isEmpty = quantity === 0 && unitPriceExGST === 0 && !code && !description && !supplier;
+                const isEmpty = unitPriceExGST === 0 && !code && !description && !supplier;
 
                 if (isEmpty) {
                     row.remove();
