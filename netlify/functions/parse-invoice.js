@@ -11,12 +11,20 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { apiKey, pdfBase64 } = JSON.parse(event.body);
+    const { pdfBase64 } = JSON.parse(event.body);
+    const apiKey = process.env.ANTHROPIC_API_KEY;
 
-    if (!apiKey || !pdfBase64) {
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Server not configured: missing ANTHROPIC_API_KEY.' })
+      };
+    }
+
+    if (!pdfBase64) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing apiKey or pdfBase64' })
+        body: JSON.stringify({ error: 'Missing pdfBase64' })
       };
     }
 
