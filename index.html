@@ -2119,10 +2119,6 @@
                 throw new Error('No items found in invoice');
             }
 
-            // Clear existing parts rows (keep at least one empty row)
-            const partsBody = document.getElementById('parts-items');
-            partsBody.innerHTML = '';
-
             // Add all items from invoice
             invoiceData.items.forEach(item => {
                 addRow(
