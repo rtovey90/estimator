@@ -1057,6 +1057,268 @@
                 min-height: 44px;
             }
         }
+
+        /* TOTALS Comparison Panel */
+        .totals-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .totals-panel.open {
+            transform: translateX(0);
+        }
+
+        .totals-panel-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .totals-panel-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.3px;
+        }
+
+        .totals-panel-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .totals-panel-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .totals-panel-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .totals-option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .totals-option-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .totals-option-card.active {
+            border-color: var(--light-blue);
+            background: rgba(0, 167, 225, 0.1);
+        }
+
+        .totals-option-name {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .totals-option-name span {
+            cursor: pointer;
+        }
+
+        .totals-option-name span:hover {
+            color: var(--light-blue);
+        }
+
+        .totals-option-badge {
+            background: var(--light-blue);
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .totals-row:last-child {
+            border-bottom: none;
+        }
+
+        .totals-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .totals-value {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .totals-value.profit {
+            color: var(--success-green);
+        }
+
+        .totals-value.editable-value {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .totals-value.editable-value:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--light-blue);
+        }
+
+        .totals-value input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: right;
+            width: 100px;
+            padding: 0;
+        }
+
+        .totals-value input:focus {
+            outline: none;
+        }
+
+        .totals-markup-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .totals-markup-item {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .totals-markup-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .totals-markup-value {
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .totals-panel-toggle {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: white;
+            border: none;
+            padding: 15px 12px;
+            border-radius: 12px 0 0 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            box-shadow: -4px 0 15px rgba(0, 102, 204, 0.3);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .totals-panel-toggle:hover {
+            padding-right: 18px;
+            box-shadow: -6px 0 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .totals-panel-toggle.hidden {
+            display: none;
+        }
+
+        .totals-grand-summary {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.2) 0%, rgba(48, 209, 88, 0.2) 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        .totals-grand-summary h3 {
+            color: var(--success-green);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1200px) {
+            .totals-panel {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .totals-panel {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .totals-panel-toggle {
+                padding: 12px 10px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1340,6 +1602,19 @@
             <div class="payment-plan-note">
                 Edit the monthly payment to set a nice round number, or adjust the term to see different payment options
             </div>
+        </div>
+    </div>
+
+    <!-- TOTALS Comparison Panel -->
+    <button class="totals-panel-toggle" id="totals-toggle" onclick="toggleTotalsPanel()">COMPARE OPTIONS</button>
+
+    <div class="totals-panel" id="totals-panel">
+        <div class="totals-panel-header">
+            <h2>Compare Options</h2>
+            <button class="totals-panel-close" onclick="toggleTotalsPanel()">&times;</button>
+        </div>
+        <div class="totals-panel-content" id="totals-panel-content">
+            <!-- Option cards will be dynamically inserted here -->
         </div>
     </div>
 
@@ -1974,6 +2249,272 @@
 
         // Set today's date on page load
         document.getElementById('quote-date').value = getTodayDate();
+
+        // ========== TOTALS COMPARISON PANEL ==========
+        let totalsPanelOpen = false;
+
+        function toggleTotalsPanel() {
+            totalsPanelOpen = !totalsPanelOpen;
+            const panel = document.getElementById('totals-panel');
+            const toggle = document.getElementById('totals-toggle');
+
+            if (totalsPanelOpen) {
+                panel.classList.add('open');
+                toggle.classList.add('hidden');
+                updateTotalsPanel();
+            } else {
+                panel.classList.remove('open');
+                toggle.classList.remove('hidden');
+            }
+        }
+
+        function calculateTabTotals(tabId) {
+            const tab = tabs[tabId];
+            if (!tab) return null;
+
+            const labourMarkup = parseFloat(tab.labourMarkup) || 0;
+            const materialsMarkup = parseFloat(tab.materialsMarkup) || 0;
+
+            let totalCostExGST = 0;
+            let totalPriceExGST = 0;
+            let totalPriceIncGST = 0;
+            let labourCost = 0;
+            let materialsCost = 0;
+
+            const sections = ['parts', 'labour', 'cable', 'misc'];
+
+            sections.forEach(section => {
+                const items = tab.items[section] || [];
+                const markup = section === 'labour' ? labourMarkup : materialsMarkup;
+
+                items.forEach(item => {
+                    const quantity = parseFloat(item.quantity) || 0;
+                    const unitPriceExGST = parseFloat(item.unitPrice) || 0;
+
+                    const costExGST = quantity * unitPriceExGST;
+                    const priceExGST = costExGST * (1 + markup / 100);
+                    const priceIncGST = priceExGST * (1 + GST_RATE);
+
+                    totalCostExGST += costExGST;
+                    totalPriceExGST += priceExGST;
+                    totalPriceIncGST += priceIncGST;
+
+                    if (section === 'labour') {
+                        labourCost += costExGST;
+                    } else {
+                        materialsCost += costExGST;
+                    }
+                });
+            });
+
+            const profitExGST = totalPriceExGST - totalCostExGST;
+            const markupPercent = totalCostExGST > 0 ? (profitExGST / totalCostExGST) * 100 : 0;
+            const profitMargin = totalPriceExGST > 0 ? (profitExGST / totalPriceExGST) * 100 : 0;
+            const paymentTerm = parseFloat(tab.paymentTerm) || 24;
+            const monthlyPayment = paymentTerm > 0 ? totalPriceIncGST / paymentTerm : 0;
+
+            return {
+                name: tab.name,
+                costExGST: totalCostExGST,
+                priceIncGST: totalPriceIncGST,
+                priceExGST: totalPriceExGST,
+                profitExGST: profitExGST,
+                markupPercent: markupPercent,
+                profitMargin: profitMargin,
+                labourMarkup: labourMarkup,
+                materialsMarkup: materialsMarkup,
+                paymentTerm: paymentTerm,
+                monthlyPayment: monthlyPayment,
+                labourCost: labourCost,
+                materialsCost: materialsCost
+            };
+        }
+
+        function updateTotalsPanel() {
+            if (!totalsPanelOpen) return;
+
+            // Save current active tab state first
+            if (activeTabId) {
+                saveTabState(activeTabId);
+            }
+
+            const container = document.getElementById('totals-panel-content');
+            let html = '';
+
+            // Calculate totals for each tab
+            const tabTotals = {};
+            let combinedCost = 0;
+            let combinedPrice = 0;
+            let combinedProfit = 0;
+
+            Object.keys(tabs).forEach(tabId => {
+                const totals = calculateTabTotals(tabId);
+                if (totals) {
+                    tabTotals[tabId] = totals;
+                    combinedCost += totals.costExGST;
+                    combinedPrice += totals.priceIncGST;
+                    combinedProfit += totals.profitExGST;
+                }
+            });
+
+            // Render each tab's card
+            Object.keys(tabs).forEach(tabId => {
+                const totals = tabTotals[tabId];
+                if (!totals) return;
+
+                const isActive = tabId === activeTabId;
+
+                html += `
+                    <div class="totals-option-card ${isActive ? 'active' : ''}" data-tab-id="${tabId}">
+                        <div class="totals-option-name">
+                            <span onclick="switchToTabFromPanel('${tabId}')">${totals.name}</span>
+                            ${isActive ? '<span class="totals-option-badge">ACTIVE</span>' : ''}
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">Cost (Ex GST)</span>
+                            <span class="totals-value">$${totals.costExGST.toFixed(2)}</span>
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">Price (Inc GST)</span>
+                            <span class="totals-value editable-value">
+                                <input type="number" step="0.01" value="${totals.priceIncGST.toFixed(2)}"
+                                       onchange="updateTabPriceFromPanel('${tabId}', this.value)"
+                                       onfocus="this.select()">
+                            </span>
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">Profit (Ex GST)</span>
+                            <span class="totals-value profit">$${totals.profitExGST.toFixed(2)}</span>
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">Monthly (${totals.paymentTerm}mo)</span>
+                            <span class="totals-value editable-value">
+                                <input type="number" step="0.01" value="${totals.monthlyPayment.toFixed(2)}"
+                                       onchange="updateTabMonthlyFromPanel('${tabId}', this.value)"
+                                       onfocus="this.select()">
+                            </span>
+                        </div>
+                        <div class="totals-markup-row">
+                            <div class="totals-markup-item">
+                                <div class="totals-markup-label">Markup</div>
+                                <div class="totals-markup-value">${totals.markupPercent.toFixed(1)}%</div>
+                            </div>
+                            <div class="totals-markup-item">
+                                <div class="totals-markup-label">Margin</div>
+                                <div class="totals-markup-value">${totals.profitMargin.toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Add combined summary if more than one tab
+            if (Object.keys(tabs).length > 1) {
+                html += `
+                    <div class="totals-grand-summary">
+                        <h3>Combined (All Options)</h3>
+                        <div class="totals-row">
+                            <span class="totals-label">Total Cost</span>
+                            <span class="totals-value">$${combinedCost.toFixed(2)}</span>
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">Total Price</span>
+                            <span class="totals-value">$${combinedPrice.toFixed(2)}</span>
+                        </div>
+                        <div class="totals-row">
+                            <span class="totals-label">Total Profit</span>
+                            <span class="totals-value profit">$${combinedProfit.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function switchToTabFromPanel(tabId) {
+            switchTab(tabId);
+            updateTotalsPanel();
+        }
+
+        function updateTabPriceFromPanel(tabId, newPriceStr) {
+            const newPrice = parseFloat(newPriceStr) || 0;
+            const tab = tabs[tabId];
+            if (!tab) return;
+
+            // Calculate total cost for this tab
+            let labourCost = 0;
+            let materialsCost = 0;
+            const sections = ['parts', 'labour', 'cable', 'misc'];
+
+            sections.forEach(section => {
+                const items = tab.items[section] || [];
+                items.forEach(item => {
+                    const quantity = parseFloat(item.quantity) || 0;
+                    const unitPriceExGST = parseFloat(item.unitPrice) || 0;
+                    const cost = quantity * unitPriceExGST;
+
+                    if (section === 'labour') {
+                        labourCost += cost;
+                    } else {
+                        materialsCost += cost;
+                    }
+                });
+            });
+
+            const totalCost = labourCost + materialsCost;
+
+            if (totalCost > 0) {
+                // Calculate uniform markup needed to reach target price
+                const targetPriceExGST = newPrice / (1 + GST_RATE);
+                const requiredMarkup = ((targetPriceExGST - totalCost) / totalCost) * 100;
+                const finalMarkup = Math.max(0, requiredMarkup).toFixed(1);
+
+                // Update tab markups
+                tab.labourMarkup = finalMarkup;
+                tab.materialsMarkup = finalMarkup;
+
+                // If this is the active tab, update the UI
+                if (tabId === activeTabId) {
+                    document.getElementById('labour-markup').value = finalMarkup;
+                    document.getElementById('materials-markup').value = finalMarkup;
+                    updateAllCalculations();
+                }
+            }
+
+            // Refresh the totals panel
+            updateTotalsPanel();
+        }
+
+        function updateTabMonthlyFromPanel(tabId, newMonthlyStr) {
+            const newMonthly = parseFloat(newMonthlyStr) || 0;
+            const tab = tabs[tabId];
+            if (!tab) return;
+
+            const paymentTerm = parseFloat(tab.paymentTerm) || 24;
+            const newTotalPrice = newMonthly * paymentTerm;
+
+            // Use the price update function
+            updateTabPriceFromPanel(tabId, newTotalPrice.toFixed(2));
+        }
+
+        // Hook into existing functions to keep totals panel updated
+        const originalCalculateGrandTotals = calculateGrandTotals;
+        calculateGrandTotals = function() {
+            originalCalculateGrandTotals();
+            // Update totals panel after a small delay to allow DOM to settle
+            if (totalsPanelOpen) {
+                setTimeout(updateTotalsPanel, 50);
+            }
+        };
+
+        const originalRenderTabs = renderTabs;
+        renderTabs = function() {
+            originalRenderTabs();
+            if (totalsPanelOpen) {
+                setTimeout(updateTotalsPanel, 50);
+            }
+        };
 
         // PDF Import functionality
         setupUploadHandlers();
