@@ -1991,7 +1991,7 @@
         <div class="ai-panel-content">
             <div class="ai-chat-messages" id="ai-chat-messages">
                 <div class="ai-message system">
-                    Tell me about this project and your client. I'll analyze your options and recommend optimal pricing for each package.
+                    Tell me about this job and the client situation. I'll help you price your options using strategic anchoring to make the right option feel like a no-brainer - while keeping your profits healthy.
                 </div>
             </div>
             <div class="ai-input-area">
@@ -3073,8 +3073,17 @@
         function displayAIRecommendations(data) {
             lastAIRecommendations = data;
 
+            // Format explanation with line breaks and basic markdown
+            let formattedExplanation = data.explanation || '';
+            // Convert markdown bold to HTML
+            formattedExplanation = formattedExplanation.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Convert line breaks
+            formattedExplanation = formattedExplanation.replace(/\n/g, '<br>');
+
             // Add explanation message
-            addAIMessage(data.explanation, 'assistant');
+            if (formattedExplanation) {
+                addAIMessage(formattedExplanation, 'assistant');
+            }
 
             // Build recommendations HTML
             let recHtml = '';
@@ -3094,16 +3103,16 @@
                         <div class="ai-recommendation" data-tab-id="${rec.tabId}">
                             <div class="ai-rec-header">
                                 <span class="ai-rec-name">${rec.name}</span>
-                                <span class="ai-rec-price">$${price.toFixed(2)}</span>
+                                <span class="ai-rec-price">$${price.toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                             </div>
                             <div class="ai-rec-metrics">
                                 <div class="ai-rec-metric">
                                     <div class="ai-rec-metric-label">Cost</div>
-                                    <div class="ai-rec-metric-value">$${cost.toFixed(2)}</div>
+                                    <div class="ai-rec-metric-value">$${cost.toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                                 </div>
                                 <div class="ai-rec-metric">
                                     <div class="ai-rec-metric-label">Profit</div>
-                                    <div class="ai-rec-metric-value profit">$${profit.toFixed(2)}</div>
+                                    <div class="ai-rec-metric-value profit">$${profit.toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                                 </div>
                                 <div class="ai-rec-metric">
                                     <div class="ai-rec-metric-label">Markup</div>
@@ -3116,7 +3125,7 @@
                             </div>
                             <div class="ai-rec-metric" style="margin-bottom: 0;">
                                 <div class="ai-rec-metric-label">Monthly (${paymentTerm}mo)</div>
-                                <div class="ai-rec-metric-value">$${monthly.toFixed(2)}/mo</div>
+                                <div class="ai-rec-metric-value">$${monthly.toLocaleString('en-AU', {minimumFractionDigits: 2, maximumFractionDigits: 2})}/mo</div>
                             </div>
                             ${rec.reasoning ? `<div class="ai-rec-reasoning">${rec.reasoning}</div>` : ''}
                             <button class="ai-rec-apply-btn" onclick="applyAIRecommendation('${rec.tabId}', ${price})">
@@ -3125,27 +3134,27 @@
                         </div>
                     `;
                 });
-            }
 
-            // Add summary box with copy button
-            if (data.textMessageSummary) {
-                recHtml += `
-                    <div class="ai-summary-box">
-                        <h4>Ready to Send</h4>
-                        <div class="ai-summary-text" id="ai-summary-text">${data.textMessageSummary.replace(/\n/g, '<br>')}</div>
-                        <button class="ai-copy-btn" onclick="copyAISummary()">
-                            Copy to Clipboard
-                        </button>
-                    </div>
-                `;
-            }
+                // Add summary box with copy button
+                if (data.textMessageSummary) {
+                    recHtml += `
+                        <div class="ai-summary-box">
+                            <h4>Ready to Send</h4>
+                            <div class="ai-summary-text" id="ai-summary-text">${data.textMessageSummary.replace(/\n/g, '<br>')}</div>
+                            <button class="ai-copy-btn" onclick="copyAISummary()">
+                                Copy to Clipboard
+                            </button>
+                        </div>
+                    `;
+                }
 
-            if (recHtml) {
                 const recContainer = document.createElement('div');
                 recContainer.innerHTML = recHtml;
                 document.getElementById('ai-chat-messages').appendChild(recContainer);
-                document.getElementById('ai-chat-messages').scrollTop = document.getElementById('ai-chat-messages').scrollHeight;
             }
+
+            // Scroll to bottom
+            document.getElementById('ai-chat-messages').scrollTop = document.getElementById('ai-chat-messages').scrollHeight;
         }
 
         function applyAIRecommendation(tabId, price) {

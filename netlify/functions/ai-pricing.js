@@ -59,28 +59,44 @@ ${itemsList}`;
       });
     }
 
-    // Add the current user message with context
-    messages.push({
-      role: 'user',
-      content: `Project: ${projectName}
-Client: ${clientName}
+    // Check if this is a follow-up message (has conversation history)
+    const isFollowUp = conversationHistory && conversationHistory.length > 0;
 
-Current Pricing Options:
+    // Add the current user message with context
+    if (isFollowUp) {
+      // Follow-up message - just send the user's response
+      messages.push({
+        role: 'user',
+        content: `${userMessage}
+
+Current options data for reference:
 ${optionsSummary}
 
-User's Context/Request:
+If you're adjusting recommendations based on my feedback, respond with the same JSON structure. If you're just discussing strategy, you can respond conversationally without JSON.`
+      });
+    } else {
+      // First message - include full context and instructions
+      messages.push({
+        role: 'user',
+        content: `Project: ${projectName}
+Client: ${clientName}
+
+My Pricing Options:
+${optionsSummary}
+
+Context from me:
 ${userMessage}
 
-Based on this information, provide pricing recommendations for each option. Consider:
-1. The client situation and project context
-2. Competitive pricing that wins business
-3. Healthy profit margins (typically 15-35% markup is standard)
-4. Round numbers that look professional
-5. The relationship between options (upgrades should feel worth it)
+I need your help pricing these options strategically. Tell me:
+1. What prices you suggest for each option and WHY
+2. How the pricing creates anchoring and makes certain options feel like no-brainers
+3. Which option you're trying to steer the client toward and why
+4. How much profit I'll make on each
 
-Respond with a JSON object (no markdown code blocks) with this structure:
+Be conversational - explain your thinking like you're coaching me on pricing strategy. After your explanation, include a JSON block with the specific numbers.
+
+Respond with your strategic explanation first, then end with a JSON object (no markdown code blocks) with this structure:
 {
-  "explanation": "Brief explanation of your pricing strategy (2-3 sentences)",
   "recommendations": [
     {
       "tabId": "tab-1",
@@ -88,12 +104,13 @@ Respond with a JSON object (no markdown code blocks) with this structure:
       "costExGST": 1000.00,
       "suggestedPriceIncGST": 1500.00,
       "paymentTerm": 24,
-      "reasoning": "Short reason for this specific price"
+      "reasoning": "The anchoring/strategic reason for this price"
     }
   ],
-  "textMessageSummary": "A ready-to-send text message summary the user can copy and send to the client, listing all options with prices and a brief value proposition for each. Keep it professional but friendly."
+  "textMessageSummary": "A ready-to-send text message I can copy and send to the client. Present the options in order from highest to lowest price (anchor high first). Make the target option sound like incredible value. Keep it professional but friendly, not salesy."
 }`
-    });
+      });
+    }
 
     // Call Claude API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -106,15 +123,31 @@ Respond with a JSON object (no markdown code blocks) with this structure:
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 4096,
-        system: `You are an expert pricing consultant for a security and electrical installation business. Your job is to help price quotes competitively while maintaining healthy profit margins.
+        system: `You are a pricing strategist who specializes in Alex Hormozi-style value-based pricing and price anchoring. You help trades businesses (security, electrical, AV) price their quotes to maximize both close rates AND profit.
 
-Key principles:
-- Standard markup in this industry is 15-35% on materials, 10-25% on labour
-- Round prices to clean numbers ($1,495 not $1,487.32)
-- Monthly payments should be round numbers when possible
-- Premium/upgrade options should show clear value vs basic options
-- Consider the client relationship and project size
-- Always return valid JSON, no markdown code blocks`,
+HORMOZI PRICING PRINCIPLES YOU APPLY:
+1. **Anchor High First** - Always present the premium option first to set the reference point. Everything else feels cheaper by comparison.
+
+2. **The Decoy Effect** - Structure pricing so one option is obviously the "smart choice." The premium anchors high, the budget option feels like you're missing out, and the middle option feels like the sweet spot.
+
+3. **Price to Value, Not Cost** - Don't just mark up costs. Price based on the VALUE and OUTCOME the client gets. A $2,000 intercom upgrade that solves 10 years of problems is worth more than the parts cost.
+
+4. **Make the Math Easy** - Use round numbers. $2,995 not $2,847. Monthly payments should be clean: $125/mo not $118.62/mo.
+
+5. **Create No-Brainer Gaps** - The jump from basic to mid-tier should feel like "for just $X more, I get so much more value." Make upgrading feel stupid NOT to do.
+
+6. **Strategic Profit Distribution** - It's OK to have lower margins on the anchor (premium) option. The goal is to make the TARGET option (where you want them to land) feel irresistible while still being very profitable for you.
+
+WHEN GIVING RECOMMENDATIONS:
+- Be conversational and explain your strategy like a coach
+- Tell them exactly which option you're steering toward and why
+- Explain the psychology of why each price works
+- Show them the profit they'll make
+- Be direct about the anchoring tactics you're using
+
+You're not just calculating markup - you're engineering a pricing structure that makes the client feel smart choosing the option that's also great for the business.
+
+When including JSON, output it raw without markdown code blocks.`,
         messages: messages
       })
     });
@@ -129,14 +162,39 @@ Key principles:
 
     const data = await response.json();
 
-    // Extract the text content and parse it
+    // Extract the text content
     let responseText = data.content[0].text.trim();
 
-    // Remove markdown code blocks if present
-    responseText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    // Try to find JSON in the response (it might be at the end after explanation)
+    let explanation = '';
+    let recommendations = null;
+    let textMessageSummary = '';
 
-    // Parse the JSON response
-    const recommendations = JSON.parse(responseText);
+    // Look for JSON object in the response
+    const jsonMatch = responseText.match(/\{[\s\S]*"recommendations"[\s\S]*\}/);
+
+    if (jsonMatch) {
+      // Extract explanation (everything before the JSON)
+      const jsonStartIndex = responseText.indexOf(jsonMatch[0]);
+      explanation = responseText.substring(0, jsonStartIndex).trim();
+
+      // Parse the JSON
+      let jsonText = jsonMatch[0];
+      // Remove any markdown code blocks if present
+      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+      try {
+        const parsed = JSON.parse(jsonText);
+        recommendations = parsed.recommendations || [];
+        textMessageSummary = parsed.textMessageSummary || '';
+      } catch (e) {
+        // JSON parsing failed, treat whole response as explanation
+        explanation = responseText;
+      }
+    } else {
+      // No JSON found - this is a conversational follow-up
+      explanation = responseText;
+    }
 
     return {
       statusCode: 200,
@@ -144,7 +202,11 @@ Key principles:
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(recommendations)
+      body: JSON.stringify({
+        explanation: explanation,
+        recommendations: recommendations,
+        textMessageSummary: textMessageSummary
+      })
     };
 
   } catch (error) {
