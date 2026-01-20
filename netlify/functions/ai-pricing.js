@@ -87,27 +87,45 @@ ${optionsSummary}
 Context from me:
 ${userMessage}
 
-I need your help pricing these options strategically. Tell me:
-1. What prices you suggest for each option and WHY
-2. How the pricing creates anchoring and makes certain options feel like no-brainers
-3. Which option you're trying to steer the client toward and why
-4. How much profit I'll make on each
+Give me a strategic pricing breakdown for ALL ${options.length} options. This is for ME to understand the strategy, not client-facing.
 
-Be conversational - explain your thinking like you're coaching me on pricing strategy. After your explanation, include a JSON block with the specific numbers.
+Format your response EXACTLY like this:
 
-Respond with your strategic explanation first, then end with a JSON object (no markdown code blocks) with this structure:
+## MY ANCHORING STRATEGY:
+
+**Option X: [ROLE] - [Option Name]**
+- Purpose: [Why this option exists in the structure]
+- Price: $X,XXX (up/down from current $X,XXX)
+- Psychology: [What the client thinks when they see this]
+- Margin: XX%
+
+[Repeat for ALL options]
+
+## THE MAGIC GAPS:
+- [Option] to [Option]: $XXX jump ($XX/month) - [why this gap matters]
+[List the key gaps that drive decision-making]
+
+## YOUR PROFIT BY OPTION:
+1. [Option Name]: $X,XXX profit
+2. [Option Name]: $X,XXX profit ← TARGET (if applicable)
+[etc]
+
+[One sentence summary of the strategy]
+
+Then end with this JSON (no markdown code blocks):
 {
   "recommendations": [
     {
       "tabId": "tab-1",
       "name": "Option Name",
+      "role": "ANCHOR/TARGET/DECOY/BUDGET",
       "costExGST": 1000.00,
       "suggestedPriceIncGST": 1500.00,
       "paymentTerm": 24,
-      "reasoning": "The anchoring/strategic reason for this price"
+      "reasoning": "Brief strategic reason"
     }
   ],
-  "textMessageSummary": "A ready-to-send text message I can copy and send to the client. Present the options in order from highest to lowest price (anchor high first). Make the target option sound like incredible value. Keep it professional but friendly, not salesy."
+  "textMessageSummary": "A ready-to-send text message for the client. Present options from highest to lowest price. Use emojis. Mark the TARGET option as 'POPULAR' or similar. Make the target feel like incredible value. Professional but friendly."
 }`
       });
     }
