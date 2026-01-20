@@ -125,7 +125,7 @@ Then end with this JSON (no markdown code blocks):
       "reasoning": "Brief strategic reason"
     }
   ],
-  "textMessageSummary": "A ready-to-send text message for the client. Present options from highest to lowest price. Use emojis. Mark the TARGET option as 'POPULAR' or similar. Make the target feel like incredible value. Professional but friendly."
+  "textMessageSummary": "A ready-to-send text message for the client. IMPORTANT FORMATTING: Put each option on its OWN LINE with a blank line between each. Use \\n\\n for spacing between options. Format like:\\n\\nHi [Name]! Here are your options:\\n\\n1) OPTION NAME - $X,XXX or $XX/month [emoji]\\nBrief description\\n\\n2) OPTION NAME - $X,XXX or $XX/month [emoji] POPULAR CHOICE!\\nBrief description\\n\\n[etc]\\n\\nClosing line. Present highest to lowest price. Make TARGET feel like incredible value."
 }`
       });
     }
