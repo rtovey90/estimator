@@ -1319,6 +1319,370 @@
                 font-size: 12px;
             }
         }
+
+        /* AI Recommendation Panel */
+        .ai-panel {
+            position: fixed;
+            right: 320px;
+            top: 0;
+            width: 420px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1e1e2e 0%, #181825 100%);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(calc(100% + 320px));
+            transition: transform 0.3s ease;
+        }
+
+        .ai-panel.open {
+            transform: translateX(0);
+        }
+
+        .totals-panel:not(.open) ~ .ai-panel,
+        .ai-panel:not(.totals-open) {
+            right: 0;
+        }
+
+        .ai-panel-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .ai-panel-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-panel-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .ai-panel-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-panel-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-message {
+            max-width: 95%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .ai-message.system {
+            background: rgba(147, 51, 234, 0.2);
+            color: #e9d5ff;
+            align-self: flex-start;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+        }
+
+        .ai-message.user {
+            background: rgba(59, 130, 246, 0.3);
+            color: #bfdbfe;
+            align-self: flex-end;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .ai-message.assistant {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e4e4e7;
+            align-self: flex-start;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-message.loading {
+            background: rgba(255, 255, 255, 0.05);
+            color: #a1a1aa;
+        }
+
+        .ai-message.loading::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .ai-input-area {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 14px;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .ai-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
+        }
+
+        .ai-send-btn {
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .ai-send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+        }
+
+        .ai-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* AI Recommendation Cards */
+        .ai-recommendation {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-rec-name {
+            font-weight: 700;
+            color: white;
+            font-size: 15px;
+        }
+
+        .ai-rec-price {
+            font-weight: 800;
+            color: #a78bfa;
+            font-size: 18px;
+        }
+
+        .ai-rec-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .ai-rec-metric {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+
+        .ai-rec-metric-label {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-rec-metric-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-top: 2px;
+        }
+
+        .ai-rec-metric-value.profit {
+            color: #4ade80;
+        }
+
+        .ai-rec-reasoning {
+            font-size: 13px;
+            color: #a1a1aa;
+            line-height: 1.5;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .ai-rec-apply-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px;
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ai-rec-apply-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+        }
+
+        .ai-summary-box {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .ai-summary-box h4 {
+            color: #c4b5fd;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-summary-text {
+            color: #e9d5ff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .ai-copy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ai-copy-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-copy-btn.copied {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: rgba(74, 222, 128, 0.4);
+            color: #4ade80;
+        }
+
+        /* AI Panel Toggle Button in Totals Panel */
+        .ai-recommend-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .ai-recommend-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+        }
+
+        @media (max-width: 900px) {
+            .ai-panel {
+                width: 100%;
+                max-width: 380px;
+                right: 0;
+            }
+
+            .ai-panel.open {
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1615,6 +1979,27 @@
         </div>
         <div class="totals-panel-content" id="totals-panel-content">
             <!-- Option cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- AI Recommendation Panel -->
+    <div class="ai-panel" id="ai-panel">
+        <div class="ai-panel-header">
+            <h2>AI Pricing Advisor</h2>
+            <button class="ai-panel-close" onclick="toggleAIPanel()">&times;</button>
+        </div>
+        <div class="ai-panel-content">
+            <div class="ai-chat-messages" id="ai-chat-messages">
+                <div class="ai-message system">
+                    Tell me about this project and your client. I'll analyze your options and recommend optimal pricing for each package.
+                </div>
+            </div>
+            <div class="ai-input-area">
+                <div class="ai-input-wrapper">
+                    <textarea class="ai-input" id="ai-input" placeholder="Describe the project, client situation, and any pricing considerations..." rows="2"></textarea>
+                    <button class="ai-send-btn" id="ai-send-btn" onclick="sendAIMessage()">&#10148;</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2357,6 +2742,13 @@
                 }
             });
 
+            // Add AI Recommend button at top
+            html += `
+                <button class="ai-recommend-btn" onclick="openAIFromTotals()">
+                    AI Pricing Advisor
+                </button>
+            `;
+
             // Render each tab's card
             Object.keys(tabs).forEach(tabId => {
                 const totals = tabTotals[tabId];
@@ -2515,6 +2907,288 @@
                 setTimeout(updateTotalsPanel, 50);
             }
         };
+
+        // ========== AI RECOMMENDATION PANEL ==========
+        let aiPanelOpen = false;
+        let aiConversationHistory = [];
+        let lastAIRecommendations = null;
+
+        function toggleAIPanel() {
+            aiPanelOpen = !aiPanelOpen;
+            const panel = document.getElementById('ai-panel');
+
+            if (aiPanelOpen) {
+                panel.classList.add('open');
+                // Position based on totals panel
+                if (totalsPanelOpen) {
+                    panel.style.right = '320px';
+                } else {
+                    panel.style.right = '0';
+                }
+            } else {
+                panel.classList.remove('open');
+            }
+        }
+
+        function openAIFromTotals() {
+            if (!aiPanelOpen) {
+                toggleAIPanel();
+            }
+            document.getElementById('ai-input').focus();
+        }
+
+        // Update AI panel position when totals panel changes
+        const originalToggleTotalsPanel = toggleTotalsPanel;
+        toggleTotalsPanel = function() {
+            originalToggleTotalsPanel();
+            const aiPanel = document.getElementById('ai-panel');
+            if (aiPanelOpen) {
+                if (totalsPanelOpen) {
+                    aiPanel.style.right = '320px';
+                } else {
+                    aiPanel.style.right = '0';
+                }
+            }
+        };
+
+        function addAIMessage(content, type) {
+            const container = document.getElementById('ai-chat-messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `ai-message ${type}`;
+            msgDiv.innerHTML = content;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+            return msgDiv;
+        }
+
+        function gatherAllTabData() {
+            // Save current tab state first
+            if (activeTabId) {
+                saveTabState(activeTabId);
+            }
+
+            const allTabData = [];
+            Object.keys(tabs).forEach(tabId => {
+                const totals = calculateTabTotals(tabId);
+                if (totals) {
+                    // Get item details too
+                    const tab = tabs[tabId];
+                    const itemSummary = [];
+                    ['parts', 'labour', 'cable', 'misc'].forEach(section => {
+                        const items = tab.items[section] || [];
+                        items.forEach(item => {
+                            if (parseFloat(item.unitPrice) > 0 || item.description) {
+                                itemSummary.push({
+                                    section: section,
+                                    description: item.description || 'Unnamed',
+                                    quantity: item.quantity,
+                                    unitPrice: item.unitPrice
+                                });
+                            }
+                        });
+                    });
+
+                    allTabData.push({
+                        tabId: tabId,
+                        name: totals.name,
+                        costExGST: totals.costExGST,
+                        currentPriceIncGST: totals.priceIncGST,
+                        currentProfitExGST: totals.profitExGST,
+                        currentMarkup: totals.markupPercent,
+                        currentMargin: totals.profitMargin,
+                        paymentTerm: totals.paymentTerm,
+                        currentMonthly: totals.monthlyPayment,
+                        items: itemSummary
+                    });
+                }
+            });
+
+            return allTabData;
+        }
+
+        async function sendAIMessage() {
+            const input = document.getElementById('ai-input');
+            const sendBtn = document.getElementById('ai-send-btn');
+            const userMessage = input.value.trim();
+
+            if (!userMessage) return;
+
+            // Disable input while processing
+            input.disabled = true;
+            sendBtn.disabled = true;
+
+            // Add user message to chat
+            addAIMessage(userMessage, 'user');
+            input.value = '';
+
+            // Add loading message
+            const loadingMsg = addAIMessage('Analyzing your options', 'assistant loading');
+
+            // Gather all tab data
+            const tabData = gatherAllTabData();
+            const projectName = document.getElementById('project-name').value || 'Unnamed Project';
+            const clientName = document.getElementById('client-name').value || 'Unknown Client';
+
+            try {
+                const response = await fetch('/.netlify/functions/ai-pricing', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userMessage: userMessage,
+                        projectName: projectName,
+                        clientName: clientName,
+                        options: tabData,
+                        conversationHistory: aiConversationHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get AI recommendation');
+                }
+
+                const data = await response.json();
+
+                // Remove loading message
+                loadingMsg.remove();
+
+                // Store conversation history
+                aiConversationHistory.push({ role: 'user', content: userMessage });
+                aiConversationHistory.push({ role: 'assistant', content: data.explanation });
+
+                // Display the recommendations
+                displayAIRecommendations(data);
+
+            } catch (error) {
+                console.error('AI Error:', error);
+                loadingMsg.remove();
+                addAIMessage('Sorry, I encountered an error analyzing your options. Please try again.', 'system');
+            }
+
+            // Re-enable input
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+
+        function displayAIRecommendations(data) {
+            lastAIRecommendations = data;
+
+            // Add explanation message
+            addAIMessage(data.explanation, 'assistant');
+
+            // Build recommendations HTML
+            let recHtml = '';
+
+            if (data.recommendations && data.recommendations.length > 0) {
+                data.recommendations.forEach(rec => {
+                    const cost = rec.costExGST || 0;
+                    const price = rec.suggestedPriceIncGST || 0;
+                    const priceExGST = price / (1 + GST_RATE);
+                    const profit = priceExGST - cost;
+                    const markup = cost > 0 ? (profit / cost) * 100 : 0;
+                    const margin = priceExGST > 0 ? (profit / priceExGST) * 100 : 0;
+                    const paymentTerm = rec.paymentTerm || 24;
+                    const monthly = price / paymentTerm;
+
+                    recHtml += `
+                        <div class="ai-recommendation" data-tab-id="${rec.tabId}">
+                            <div class="ai-rec-header">
+                                <span class="ai-rec-name">${rec.name}</span>
+                                <span class="ai-rec-price">$${price.toFixed(2)}</span>
+                            </div>
+                            <div class="ai-rec-metrics">
+                                <div class="ai-rec-metric">
+                                    <div class="ai-rec-metric-label">Cost</div>
+                                    <div class="ai-rec-metric-value">$${cost.toFixed(2)}</div>
+                                </div>
+                                <div class="ai-rec-metric">
+                                    <div class="ai-rec-metric-label">Profit</div>
+                                    <div class="ai-rec-metric-value profit">$${profit.toFixed(2)}</div>
+                                </div>
+                                <div class="ai-rec-metric">
+                                    <div class="ai-rec-metric-label">Markup</div>
+                                    <div class="ai-rec-metric-value">${markup.toFixed(1)}%</div>
+                                </div>
+                                <div class="ai-rec-metric">
+                                    <div class="ai-rec-metric-label">Margin</div>
+                                    <div class="ai-rec-metric-value">${margin.toFixed(1)}%</div>
+                                </div>
+                            </div>
+                            <div class="ai-rec-metric" style="margin-bottom: 0;">
+                                <div class="ai-rec-metric-label">Monthly (${paymentTerm}mo)</div>
+                                <div class="ai-rec-metric-value">$${monthly.toFixed(2)}/mo</div>
+                            </div>
+                            ${rec.reasoning ? `<div class="ai-rec-reasoning">${rec.reasoning}</div>` : ''}
+                            <button class="ai-rec-apply-btn" onclick="applyAIRecommendation('${rec.tabId}', ${price})">
+                                Apply This Price
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            // Add summary box with copy button
+            if (data.textMessageSummary) {
+                recHtml += `
+                    <div class="ai-summary-box">
+                        <h4>Ready to Send</h4>
+                        <div class="ai-summary-text" id="ai-summary-text">${data.textMessageSummary.replace(/\n/g, '<br>')}</div>
+                        <button class="ai-copy-btn" onclick="copyAISummary()">
+                            Copy to Clipboard
+                        </button>
+                    </div>
+                `;
+            }
+
+            if (recHtml) {
+                const recContainer = document.createElement('div');
+                recContainer.innerHTML = recHtml;
+                document.getElementById('ai-chat-messages').appendChild(recContainer);
+                document.getElementById('ai-chat-messages').scrollTop = document.getElementById('ai-chat-messages').scrollHeight;
+            }
+        }
+
+        function applyAIRecommendation(tabId, price) {
+            updateTabPriceFromPanel(tabId, price.toFixed(2));
+
+            // Visual feedback
+            const btn = event.target;
+            btn.textContent = 'Applied!';
+            btn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+            setTimeout(() => {
+                btn.textContent = 'Apply This Price';
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        function copyAISummary() {
+            const summaryEl = document.getElementById('ai-summary-text');
+            if (!summaryEl) return;
+
+            const text = summaryEl.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                btn.classList.add('copied');
+                btn.innerHTML = 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = 'Copy to Clipboard';
+                }, 2000);
+            });
+        }
+
+        // Handle Enter key in AI input
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiInput = document.getElementById('ai-input');
+            if (aiInput) {
+                aiInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendAIMessage();
+                    }
+                });
+            }
+        });
 
         // PDF Import functionality
         setupUploadHandlers();
