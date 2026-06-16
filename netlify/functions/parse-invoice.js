@@ -86,7 +86,7 @@ Important rules:
       const error = await response.json();
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: error.error?.message || 'API request failed' })
+        body: JSON.stringify({ error: error.error?.message || JSON.stringify(error) })
       };
     }
 
