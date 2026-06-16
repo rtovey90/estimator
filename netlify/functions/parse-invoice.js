@@ -38,7 +38,7 @@ exports.handler = async (event, context) => {
         'anthropic-beta': 'pdfs-2024-09-25'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-sonnet-4-6',
         max_tokens: 4096,
         messages: [{
           role: 'user',
@@ -68,6 +68,7 @@ exports.handler = async (event, context) => {
 }
 
 Important rules:
+- Only look at the invoice/quotation pages (not terms & conditions pages)
 - Extract the supplier/company name
 - Include ALL line items from the invoice
 - Use the unit price EXCLUDING GST (Ex GST price)
@@ -83,10 +84,16 @@ Important rules:
     });
 
     if (!response.ok) {
-      const error = await response.json();
+      let errorMsg = `HTTP ${response.status}`;
+      try {
+        const error = await response.json();
+        errorMsg = error.error?.message || JSON.stringify(error);
+      } catch {
+        try { errorMsg = await response.text(); } catch {}
+      }
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: error.error?.message || JSON.stringify(error) })
+        body: JSON.stringify({ error: errorMsg })
       };
     }
 
