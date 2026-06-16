@@ -3340,17 +3340,17 @@
             });
 
             if (!response.ok) {
-                let message = 'API request failed';
+                let message = `HTTP ${response.status}`;
                 try {
-                    const error = await response.json();
-                    message = error.error || error.message || message;
-                } catch (parseError) {
+                    const text = await response.text();
                     try {
-                        const text = await response.text();
-                        if (text) message = text.slice(0, 200);
-                    } catch (readError) {
-                        // Keep default message
+                        const error = JSON.parse(text);
+                        message = error.error || error.message || message;
+                    } catch {
+                        if (text) message = `HTTP ${response.status}: ${text.slice(0, 300)}`;
                     }
+                } catch {
+                    // keep status code message
                 }
                 throw new Error(message);
             }

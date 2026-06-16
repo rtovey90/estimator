@@ -86,11 +86,14 @@ Important rules:
     if (!response.ok) {
       let errorMsg = `HTTP ${response.status}`;
       try {
-        const error = await response.json();
-        errorMsg = error.error?.message || JSON.stringify(error);
-      } catch {
-        try { errorMsg = await response.text(); } catch {}
-      }
+        const text = await response.text();
+        try {
+          const error = JSON.parse(text);
+          errorMsg = error.error?.message || JSON.stringify(error);
+        } catch {
+          if (text) errorMsg = text.slice(0, 500);
+        }
+      } catch {}
       return {
         statusCode: response.status,
         body: JSON.stringify({ error: errorMsg })
