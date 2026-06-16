@@ -139,7 +139,7 @@ Then end with this JSON (no markdown code blocks):
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 4096,
         system: `You are a pricing strategist who specializes in Alex Hormozi-style value-based pricing and price anchoring. You help trades businesses (security, electrical, AV) price their quotes to maximize both close rates AND profit.
 
